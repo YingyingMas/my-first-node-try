@@ -1,20 +1,23 @@
 {
-  "name": "node-athena",
+  "name": "blog-1",
   "version": "1.0.0",
-  "description": "nodejs项目",
-  "main": "app.js",
+  "description": "",
+  "main": "bin/www.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/YingyingMas/node-athena.git"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "cross-env NODE_ENV=dev nodemon ./bin/www.js",
+    "prd": "cross-env NODE_ENV=production nodemon ./bin/www.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/YingyingMas/node-athena/issues"
+  "devDependencies": {
+    "cross-env": "^5.2.0",
+    "nodemon": "^1.18.9"
   },
-  "homepage": "https://github.com/YingyingMas/node-athena#readme"
+  "dependencies": {
+    "mysql": "^2.16.0",
+    "redis": "^2.8.0",
+    "xss": "^1.0.3"
+  }
 }
