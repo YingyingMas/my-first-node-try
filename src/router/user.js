@@ -8,7 +8,6 @@ const handleUserRouter = (req, res) => {
   if (method === 'POST' && req.path === '/api/user/login') {
     const {username, password} = req.body;
     const res = login(username, password);
-    console.log(res);
     if (res) {
       return new SuccessModel();
     } else {

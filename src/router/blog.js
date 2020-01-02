@@ -1,6 +1,9 @@
+
 const {getList, getDetail, newBlog, updateBlog, delBlog} = require('../controller/blog');// 四层 controller 只关心数据
 const {SuccessModel, ErrorModel} = require('../model/resModel');
 
+//API前端后端对接，不通系统对接的一个术语；包含url（路由） 输入 输出
+//路由：/api/blog/list，API的一部分，后端系统内部的一个模块，实现的的一个层次，系统中分了很多模块，如router-controler--
 
 const handleBlogRouter = (req, res) => {
   const method = req.method;
