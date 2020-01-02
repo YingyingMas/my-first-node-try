@@ -1,5 +1,4 @@
-
-const {getList} = require('../controller/blog');// 四层 controller 只关心数据
+const {getList, getDetail, newBlog, updateBlog, delBlog} = require('../controller/blog');// 四层 controller 只关心数据
 const {SuccessModel, ErrorModel} = require('../model/resModel');
 
 
@@ -16,29 +15,36 @@ const handleBlogRouter = (req, res) => {
 
   // 获取博客详情
   if (method === 'GET' && req.path === '/api/blog/detail') {
-    return {
-      msg: '获取博客详情'
-    }
+    const id = req.query.id;
+    const data = getDetail(id)
+    return new SuccessModel(data)
   }
 
   // 新建一篇博客
   if (method === 'POST' && req.path === '/api/blog/new') {
-    return {
-      msg: '新建一篇博客'
-    }
+    const data = newBlog(req.body)
+    return new SuccessModel(data)
   }
 
   // 更新一篇博客
   if (method === 'POST' && req.path === '/api/blog/update') {
-    return {
-      msg: '更新一篇博客'
+    const id = req.query.id;
+    const res = updateBlog(id, req.body)
+    if (res) {
+      return new SuccessModel();
+    } else {
+      return new ErrorModel('更新失败');
     }
   }
 
   // 删除一篇博客
   if (method === 'POST' && req.path === '/api/blog/del') {
-    return {
-      msg: '删除一篇博客'
+    const id = req.query.id;
+    const res = delBlog(id, req.body)
+    if (res) {
+      return new SuccessModel();
+    } else {
+      return new ErrorModel('删除失败');
     }
   }
 }

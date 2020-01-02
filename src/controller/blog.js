@@ -1,8 +1,8 @@
 const getList = (author, keyword) => {
   return [
     {
-      id: 1,
-      title: 123
+      id: author,
+      title: keyword
     },
     {
       id: 2,
@@ -15,4 +15,37 @@ const getList = (author, keyword) => {
   ]
 }
 
-module.exports = {getList}
+const getDetail = (id) => {
+  return [
+    {
+      id: id,
+      title: ''
+    }
+  ]
+}
+
+const newBlog = (blogData = {}) => {
+  return {
+    id: 3//新建之后插入到数据表里面的id
+  }
+}
+
+const updateBlog = (id, blogData = {}) => {
+  console.log('更新的博客的' + id);
+  console.log(blogData);
+  return true;//更新成功
+
+}
+
+const delBlog = (id, author) => {
+  console.log('删除的博客的' + id);
+  return false;//删除成功
+}
+
+module.exports = {
+  getList,
+  getDetail,
+  newBlog,
+  updateBlog,
+  delBlog
+}
