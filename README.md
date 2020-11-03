@@ -84,3 +84,33 @@
 
 - api包括路由、输入、输出
 - 路由：api的一部分，后端系统内部的一个定义的模块
+
+## MySQL
+
+- 安装 MySQL（数据库服务端）[](https://downloads.mysql.com/archives/community/)
+- 安装过程中记住当时输入的 root 密码
+- 安装成功后进入系统偏好设置找到 MySQL
+- 进入/usr/local/mysql/bin,查看此目录下是否有mysql
+- vim ~/.bash_profile 添加环境变量 export PATH=${PATH}:/usr/local/mysql/bin，使用zsh shell，编辑 ~/.zshrc 文件配置，并 source 配置文件
+- 安装可视化数据库设计软件 MySQL Workbench，专为 MySQL 设计的可视化数据库建模工具[](https://downloads.mysql.com/archives/workbench/)
+- 打开 Workbench，点击界面加号新建连接，输入连接相关信息，本地的话就是127.0.0.1，输入数据库密码，即安装 MySQL 时设置的密码，点击 ok 连接
+- 建库，为此博客项目新建一个库，点击上方小圆柱加号，设置库名称，如 myblog，确认点击 apply，```CREATE SCHEMA `myblog` ```，继续确认 apply;
+- 点击上方小sql加号，新建 sql file，输入 ```show databases;```点击小闪电运行，查看当前所有库
+- 此时左侧 SCHEMAS 里面已经显示 myblog 库
+- 点击展开 myblog，右击 tables 点 creat table，建 user/blog 表，输入表名，输入表column、datatype、PK(主键)、NN(不为空)、AI(自动增加)
+- 修改表：右击 tables 点 alter table，删除表：右击 tables 点 drop table
+- 编辑区输入 ```use myblog;``` 设置当前使用某个库
+- 查看当前库所有表 ```show tables;``` ，注释使用双横杠 ```-- show tables; --```
+- 向 user 表中插入数据 ```insert into users (username, `password`,  realname) values ('lisi', '123', '李四'  );```，password 为关键字，使用反引号括起来即可
+- 查询所有表数据 ```select * from users;```
+- 查询表某些列数据 ```select id, username from users;```
+- 按条件查询表数据 ```select * from users where username = 'zhangsan' and `password` = '123';```
+- 模糊查询表数据 ``` select * from users where username like '%lisi%' ```
+- 查询数据排序 ```select id, username from users order by id;```，```select id, username from users order by id desc;```
+- 更新表数据 ```update users set realname = '李四2' where username = 'lisi';```
+- 点击运行会报错：Error Code: 1175. You are using safe update mode and you tried to update a table without a WHERE that uses a KEY column To disable safe mode, toggle the option in Preferences -> SQL Editor and reconnect.
+- 运行 ```SET SQL_SAFE_UPDATES = 0``` 解决
+- 删除表数据 ```delete from users where id = 4;```
+- 实际工作中为预防删除数据，往往在表中增 state 列，修改 state 值为 0 或 1，软删除数据
+- 如删除lisi ```update users set state = '0' where username = 'lisi';```，```select * from users where state <> '0';```
+  
