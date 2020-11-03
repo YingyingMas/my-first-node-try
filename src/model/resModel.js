@@ -1,9 +1,8 @@
 // 建数据模型
 
-
 class BaseModel {
   constructor(data, message) {
-    if (typeof data === 'string') {//单参数兼容
+    if (typeof data === 'string') {// 如果直接传入一个字符串参数，则直接作为msg
       this.message = data
       data = null
       message = null

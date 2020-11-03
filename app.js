@@ -38,10 +38,13 @@ const serverHandle = (req, res) => {
   const url = req.url;
   req.path = url.split('?')[0];
 
-  // 解析 query
+  // nodejs 原生模块 querystring 解析 query
   req.query = querystring.parse(url.split('?')[1]);
+
+  // 异步处理 postdata，接收完成后将参数放入请求体
   getPostData(req).then((postdata) => {
     req.body = postdata;
+
     // 处理 blog 路由
     const blogData = handleBlogRouter(req, res);
     if (blogData) {
