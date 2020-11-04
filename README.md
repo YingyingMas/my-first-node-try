@@ -113,4 +113,29 @@
 - 删除表数据 ```delete from users where id = 4;```
 - 实际工作中为预防删除数据，往往在表中增 state 列，修改 state 值为 0 或 1，软删除数据
 - 如删除lisi ```update users set state = '0' where username = 'lisi';```，```select * from users where state <> '0';```
-  
+- 补充-修改表 column 名字 ```alter table blogs change column creattime createtime varchar(45);`，其中可修改内容： blogs 为表的名字，creattime 为 旧 column 名，createtime 为新 column 名，varchar(45)为新 column 类型
+
+## 连接数据库
+
+- 安装 ```cnpm install --save mysql```
+- demo测试在 demo-mysql 文件中
+- 终端运行 node index.js，后报错：Error: ER_NOT_SUPPORTED_AUTH_MODE: Client does not support authentication protocol requested by serv，原因：mysql8.0加密方式的原因报错。
+- 解决报错：
+  - 进入 mysql：```mysql -u root -p```
+  - 输入mysql用户密码进入 mysql
+  - 执行```use mysql;```
+  - 执行```alter user 'root'@'localhost' identified with mysql_native_password by '11111111';```
+  - 执行```flush privileges;```，成功过后输出 Query OK, 0 rows affected (0.07 sec)
+  - 执行```quit```退出mysql
+- 再次运行，数据查询数据
+
+## 博客项目连接数据库
+
+- 新建 src-conf-db.js，进行项目数据库连接配置
+- 新建 src-db-mysql.js，创建连接，异步获取数据库数据，抛出一个函数->依据参数sql异步查询表数据返回 promise
+- 修改 controller-blogs.js，编写查询 sql，调用上步函数传入 sql，抛出 promise
+- 修改 router-blogs.js，取到上步抛出的 promise，.then获取查询结果并数据模型包裹后抛出，抛出此 promise，此时 router 抛出的不是假数据而是 promise
+- 修改 app.js，将原本的res.end(假数据)中的假数据改为 promise.then 获取数据
+- 浏览器进行 get 请求，报错，排查过程中将所有 promise 用 catch 捕捉异常，根据异常信息解决问题后请求成功
+- 请求路径：[](http://localhost:8088/api/blog/list?author=lisi)
+- 如上完成其他所有接口

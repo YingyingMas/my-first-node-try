@@ -46,21 +46,36 @@ const serverHandle = (req, res) => {
     req.body = postdata;
 
     // 处理 blog 路由
-    const blogData = handleBlogRouter(req, res);
-    if (blogData) {
-      res.end(JSON.stringify(blogData));
+    // const blogData = handleBlogRouter(req, res);
+    // if (blogData) {
+    //   res.end(JSON.stringify(blogData));
+    //   return;
+    // }
+    const blogDataPromise = handleBlogRouter(req, res);
+    if (blogDataPromise) {
+      blogDataPromise.then(blogData => {
+        if (blogData) {
+          res.end(JSON.stringify(blogData));
+        }
+      })
       return;
     }
 
     // 处理 user 路由
-    const userData = handleUserRouter(req, res);
-    if (userData) {
-      res.end(JSON.stringify(userData));
+    const userDataPromise = handleUserRouter(req, res);
+    if (userDataPromise) {
+      userDataPromise.then(userData => {
+        if (userData) {
+          res.end(JSON.stringify(userData));
+        }
+      }).catch((err) => {
+        console.log(err);
+      })
       return;
     }
 
     // 未命中路由，返回 404
-    res.writeHead(404, {"Content-type": "text/plain"});
+    res.writeHead(404, { "Content-type": "text/plain" });
     res.write("404 Not Found\n");
     res.end();
   })
