@@ -139,3 +139,19 @@
 - 浏览器进行 get 请求，报错，排查过程中将所有 promise 用 catch 捕捉异常，根据异常信息解决问题后请求成功
 - 请求路径：[](http://localhost:8088/api/blog/list?author=lisi)
 - 如上完成其他所有接口
+
+## 登录
+
+- 登录涉及：登录校验与登录信息存储
+- cookie
+  - 存储在浏览器客户端
+  - 有大小限制
+  - 跨域不共享
+  - 字符串非结构化数据，格式：k1=v1,k2=v2,k3=vs
+  - 每次发送 http 会将请求域的 cookie 发送给 server 端
+  - server 端可以修改 cookie 返回给浏览器
+  - 浏览器也可以修改，但是可以限制，不让js修改
+  - 浏览器查看 cookie 的三种方式：1.控制台请求的 response 和 request 的 header 信息中；2.application-storage 查看；3.```document.cookie```
+  - js 修改 cookie ：只能累加，不能覆盖修改，```document.cookie = 'k1=11'```
+- session
+- 将 session 写入 Redis
