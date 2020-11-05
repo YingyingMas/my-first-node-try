@@ -1,4 +1,5 @@
 const { login } = require('../controller/user');
+const { get, set } = require('../db/redis');
 const { SuccessModel, ErrorModel } = require('../model/resModel');
 
 // 获取 cookie 的过期时间
@@ -33,8 +34,11 @@ const handleUserRouter = (req, response) => {
         // 二、上述一直接将  sql数据直接设置在 cookie 中暴露在客户端会有用户信息安全隐患，
         //改用session，在 app.js 中将 userid 通过 response.setHeader('Set-Cookie',...) 设置在 cookie 中暴露给客户端
         // server 端通过此 userid 匹配到 user 数据，使用此 user 数据进行逻辑处理
-        req.session.username = data.username
-        req.session.realname = data.realname
+        req.session.username = data.username;
+        req.session.realname = data.realname;
+
+        // 同步更新 Redis
+        set(req.sessionId, req.session);
 
         return new SuccessModel();
       } else {
@@ -46,7 +50,8 @@ const handleUserRouter = (req, response) => {
   // 登录验证是否成功的测试接口，用login接口测试登录，登录成功后，用此接口进行登录成功后测试
   if (method === 'GET' && req.path === '/api/user/login-test') {
     // if (req.cookie.username) {
-    console.log(req.session);
+    console.log('req.session', req.session);
+    // 登录验证，获取登录信息
     if (req.session.username) {
       return Promise.resolve(
         new SuccessModel({

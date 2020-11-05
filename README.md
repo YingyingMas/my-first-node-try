@@ -140,7 +140,7 @@
 - 请求路径：[](http://localhost:8088/api/blog/list?author=lisi)
 - 如上完成其他所有接口
 
-## 登录
+## 登录（cookie、session、Redis）
 
 - 登录涉及：登录校验与登录信息存储
 - cookie 和 session
@@ -166,10 +166,9 @@
   - server 端可以通过 ```req.cookie.```获取到当初存入 cookie 的数据，但是这样直接把数据暴露在客户端 cookie 中会有安全隐患
   - 为解决安全问题，设置 cookie 仅存放一个 userid 标识，sever 端通过解析此 userid 来获取对应用户信息，这就是 session 解决方案
   - 新建一个 SESSION_DATA 对象存放 {userid:{user数据}}
-  - 在请求登录接口时，新建 userid 并设置为 cookie，并以此 userid 为键新建空数据 ```SESSION_DATA[userid]={}```
-  - 将空数据赋值给 ```req.session = SESSION_DATA[userid]```
-  - 将依据登录接口参数查询到的表数据写入 req.session
-  - 登录成功后下一次接口请求时获取 cookie 中的 userid ，直接从 SESSION_DATA 取对应的数据，赋值给 req.session，此后接口均可在session中使用数据，而不是取cookie中的
+  - 在请求登录接口时，新建 userid 并设置为 cookie，并以此 userid 为键新建空数据 ```SESSION_DATA[userid]={}```，SESSION_DATA 专门用来存储 session，其中每一项 key 为 userid，val 为 session 数据
+  - 将空数据赋值给 ```req.session = SESSION_DATA[userid]``` 以供使用 session 数据
+  - 将依据登录接口参数查询到的表数据写入 req.session = ，此时 SESSION_DATA 会同步数据，登录成功后，之后请求的接口，请求时获取 cookie 中的 userid ，直接从 SESSION_DATA 取对应的 session 数据，赋值给对应的 req.session
 - session 和 Redis
   - 上述session 存储在 ```const SESSION_DATA = {}``` 中，是一个变量，程序运行进程中的一个内存空间，操作系统会为程序运行的每个进程分配有限的内存块，进程的内存有限，如果访问量过大，session数据很大，内存就会爆掉了
   - 正式上线的时候会分配成多个进程来跑的，后多核处理器可以同时处理多个进程，每个进程都会有一个session，多进程之间内存数据无法共享。
@@ -184,3 +183,15 @@
   - ```keys *``` 查看所有键
   - ```del name```删除
   - ```quit``` 退出 Redis
+- 测试 redis
+  - 安装 ```cnpm install --save redis```
+  - 实例：demo-redis-index.js
+- 博客项目应用 Redis
+  - conf-db.js 配置 Redis 服务相关变量
+  - 新建 db-redis.js，配置启动 redis 服务，抛出 set 存储与 get 获取方法
+  - 将原来用 SESSION_DATA 变量存储的 session 信息 改为用 redis 存储
+  - 初始时同上理，没有从 cookie 中获取到 sessionid（即 userid ），则新建一个，插进去```set(新建的userId, {})```
+  - 如果从 cookie 中获取到 sessionid，则依据此 id ，从 redis 中异步 get session 数据，获取到的话则 req.session 直接赋值，获取不到的话就赋值空
+  - 对应的路由中，查询的表数据结果赋值完req.session后同步更新redis
+  - 重新请求登录接口，成功后，查看 redis ```keys *``` 看到新插入key，如 1604571281467_0.241357995331726，```get 1604571281467_0.241357995331726```输出存入的 session 数据
+  - 将增删改查博客的几个接口加上登录验证，且新建删除博客的接口需要 session 中的数据
