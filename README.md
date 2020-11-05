@@ -197,3 +197,5 @@
   - 将增删改查博客的几个接口加上登录验证，且新建删除博客的接口需要 session 中的数据
 
 ## Nginx
+
+- 题外话：```cnpm install http-server -g```，```http-server -p 8001```启动一个本地服务，浏览器访问[](http://localhost:8001/)
