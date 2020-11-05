@@ -143,7 +143,7 @@
 ## 登录
 
 - 登录涉及：登录校验与登录信息存储
-- cookie
+- cookie 和 session
   - 存储在浏览器客户端
   - 有大小限制
   - 跨域不共享
@@ -152,6 +152,35 @@
   - server 端可以修改 cookie 返回给浏览器
   - 浏览器也可以修改，但是可以限制，不让js修改
   - 浏览器查看 cookie 的三种方式：1.控制台请求的 response 和 request 的 header 信息中；2.application-storage 查看；3.```document.cookie```
-  - js 修改 cookie ：只能累加，不能覆盖修改，```document.cookie = 'k1=11'```
-- session
-- 将 session 写入 Redis
+  - js 修改 cookie ：```document.cookie = 'k1=11'```
+  - server 端获取 cookie :```req.headers.cookie```
+  - 测试：
+  ![写](demo/img/前端写入cookie.png)
+  ![带](demo/img/请求接口时带着cookie.png)
+  ![取](demo/img/后端取到的解析后的cookie.png)
+  - server 端设置 cookie ```response.setHeader('Set-Cookie', 'username=lisi; path=/; httpOnly; expires=...;')```
+  - 浏览器携带用户名和密码请求登录接口，接口获取到参数后查询 user 表，取到 user 表数据，将数据中的必要值通过上步方法设置 cookie，，通过 response headers 的 Set-Cookie 字段传送，这样浏览器客户端就存在了 cookie，下一次接口请求时会通过 request headers 的 Cookie 字段带着此 cookie
+  - 为防止客户端修改 cookie 伪造登录，server 端设置 cookie 时加上 httpOnly，这样在前端使用 document.cookie 就无法修改该cookie，server 端获取的时候只会获取自己设置的 cookie
+  - expires 设置 cookie 过期时间
+  - cookie 中存放用户信息会暴露信息
+  - server 端可以通过 ```req.cookie.```获取到当初存入 cookie 的数据，但是这样直接把数据暴露在客户端 cookie 中会有安全隐患
+  - 为解决安全问题，设置 cookie 仅存放一个 userid 标识，sever 端通过解析此 userid 来获取对应用户信息，这就是 session 解决方案
+  - 新建一个 SESSION_DATA 对象存放 {userid:{user数据}}
+  - 在请求登录接口时，新建 userid 并设置为 cookie，并以此 userid 为键新建空数据 ```SESSION_DATA[userid]={}```
+  - 将空数据赋值给 ```req.session = SESSION_DATA[userid]```
+  - 将依据登录接口参数查询到的表数据写入 req.session
+  - 登录成功后下一次接口请求时获取 cookie 中的 userid ，直接从 SESSION_DATA 取对应的数据，赋值给 req.session，此后接口均可在session中使用数据，而不是取cookie中的
+- session 和 Redis
+  - 上述session 存储在 ```const SESSION_DATA = {}``` 中，是一个变量，程序运行进程中的一个内存空间，操作系统会为程序运行的每个进程分配有限的内存块，进程的内存有限，如果访问量过大，session数据很大，内存就会爆掉了
+  - 正式上线的时候会分配成多个进程来跑的，后多核处理器可以同时处理多个进程，每个进程都会有一个session，多进程之间内存数据无法共享。
+  - 比如第一次访问命中了第一个进程，数据写进去了，第二次访问命中了第四个进程，那么之前访问的数据就看不到了（负载均衡）
+  - web server 内存数据库，数据存在内存中，读写特别快，但内存昂贵，断电丢失
+  - MySQL 硬盘数据库
+  - Redis 内存数据库，可以用作数据库、缓存和消息中间件。把 session 单独拿出来放在 Redis 单独的服务器中存储，Redis可以扩展，性能方面有响应的解决方案
+  - mac 安装 ```brew install redis```
+  - 运行 ```/usr/local/bin/redis-server /usr/local/etc/redis.conf``` 后出现一个大logo，服务已经启动
+  - 另起终端窗口执行```redis-cli```启动 Redis 客户端
+  - 测试demo：```set myKey abc```,```get myKey```
+  - ```keys *``` 查看所有键
+  - ```del name```删除
+  - ```quit``` 退出 Redis
