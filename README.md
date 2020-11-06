@@ -198,4 +198,9 @@
 
 ## Nginx
 
-- 题外话：```cnpm install http-server -g```，```http-server -p 8001```启动一个本地服务，浏览器访问[](http://localhost:8001/)
+- 题外话：```cnpm install http-server -g```，```http-server -p 8001```启动一个本地服务，浏览器访问[](http://localhost:8001/)，起服务访问前端静态资源
+- Nginx 做高性能的静态服务
+- Nginx 负载均衡配置，作为流量来的入口，然后分配到其他服务
+- Nginx 反向代理（即对客户端不可见，是个黑盒），浏览器客户端能控制是正向代理
+- 现测试：前端页面-8001，nodejs-8000，Nginx-8080
+- 安装与配置 Nginx
