@@ -204,3 +204,10 @@
 - Nginx 反向代理（即对客户端不可见，是个黑盒），浏览器客户端能控制是正向代理
 - 现测试：前端页面-8001，nodejs-8000，Nginx-8080
 - 安装与配置 Nginx
+
+## Windows下安装
+
+- 安装sql：参照 [](https://www.runoob.com/mysql/mysql-install.html) + 配置环境变量
+- 安装 redis，下载压缩包[](https://github.com/tporadowski/redis/releases)，解压固定目录下放好，
+cmd 切换至压缩包解压后所在文件夹运行```redis-server.exe redis.windows.conf```，配置好系统环境变量，
+```redis-server```启动，另起命令窗口，```redis-cli```进入redis编辑，```quit```退出
