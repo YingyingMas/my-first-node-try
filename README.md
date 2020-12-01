@@ -235,9 +235,15 @@
 - IO（in输入/out输出）：网络IO、文件IO
 - demo 文件夹新建 steam 文件夹，测试 node 流操作
 
-
 ## express 框架
 
 - 安装，使用脚手架 express-generator，```npm install express-generator -g```
 - 初始化项目目录 ```express myblog-express```（app.js、bin、routes、views、public）
 - npm i  -> npm start
+- 安装与配置 Nginx
+
+## Windows下安装
+
+- 安装sql：参照 [](https://www.runoob.com/mysql/mysql-install.html) + 配置环境变量
+- 安装 redis，下载压缩包[](https://github.com/tporadowski/redis/releases)，解压固定目录下放好，
+cmd 切换至压缩包解压后所在文件夹运行```redis-server.exe redis.windows.conf```，配置好系统环境变量，```redis-server```启动，另起命令窗口，```redis-cli```进入redis编辑，```quit```退出
