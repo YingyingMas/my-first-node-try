@@ -14,8 +14,8 @@ const handleUserRouter = (req, response) => {
   const method = req.method;
 
   // 登录
-  if (method === 'GET' && req.path === '/api/user/login') {
-    const { username, password } = req.query;
+  if (method === 'POST' && req.path === '/api/user/login') {
+    const { username, password } = req.body;
     const resPromise = login(username, password);
     return resPromise.then((data) => {
       // 根据 req.body 中用户传过来的账号和密码去 user 表中后去对应的 user 数据，

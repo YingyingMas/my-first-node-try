@@ -25,6 +25,15 @@ const handleBlogRouter = (req, res) => {
 
     let author = req.query.author || '';// 查询条件：依据 author 查询
     const keyword = req.query.keyword || '';// 查询条件：依据 keyword 查询
+
+    if (req.query.isadmin) {
+      const loginCheckResult = loginCheck(req);// 管理员界面
+      if (loginCheckResult) {
+        return loginCheckResult;// 未登录
+      }
+      author = req.session.username;// 强制查询自己的博客
+    }
+
     const resultPromise = getList(author, keyword);
     return resultPromise.then(listData => {
       return new SuccessModel(listData);

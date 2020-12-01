@@ -203,4 +203,41 @@
 - Nginx 负载均衡配置，作为流量来的入口，然后分配到其他服务
 - Nginx 反向代理（即对客户端不可见，是个黑盒），浏览器客户端能控制是正向代理
 - 现测试：前端页面-8001，nodejs-8000，Nginx-8080
-- 安装与配置 Nginx
+- 安装与配置 Nginx，本机host文件新增```127.0.0.1  my-first-node.com```，nginx 下 servers 文件夹新增配置文件 my-first-node.com.conf，内容如下，重启 nginx，浏览器访问 my-first-node.com，->即打开本机 8001 静态页面，静态页面请求本机 8000 服务，开始联调
+
+  ```txt
+  server {
+    listen 80;
+
+    server_name my-first-node.com;
+
+    location / {
+      proxy_buffering off;
+      proxy_pass http://my-first-node.com:8001;
+      add_header 'Access-Control-Allow-Origin' '*';
+    }
+
+    location /api/ {
+      proxy_buffering off;
+      proxy_pass http://localhost:8000;
+    }
+  }
+  ```
+
+## 日志
+
+- 访问日志 access log
+- 自定义日志
+- 日志文件很大
+- 日志存储到文件中，nodejs文件操作，nodejs stream
+- 日志文件拆分，日志内容分析
+- demo 文件夹新建 file 文件夹，测试 node 如何读写文件
+- IO（in输入/out输出）：网络IO、文件IO
+- demo 文件夹新建 steam 文件夹，测试 node 流操作
+
+
+## express 框架
+
+- 安装，使用脚手架 express-generator，```npm install express-generator -g```
+- 初始化项目目录 ```express myblog-express```（app.js、bin、routes、views、public）
+- npm i  -> npm start
